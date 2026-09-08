@@ -1,0 +1,586 @@
+@import url(https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic);
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Rye&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-button: #f1ddcf;
+  --color-primary: #ffdae9;
+  --color-primary-dark: #e8aec6;
+  --color-secondary: #f2efaa;
+  --color-txt: #572233;
+
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --font-handwritten: "Caveat", "Segoe Print", "Bradley Hand", cursive;
+}
+
+@layer base {
+  *{
+    box-sizing: border-box;
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-8px);
+  }
+
+  75% {
+    transform: translateX(8px);
+  }
+}
+
+@keyframes lightboxIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes photoIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.92) rotate(-2deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+}
+
+button {
+  font: inherit;
+}
+
+.timeline-scrollbar::-webkit-scrollbar {
+  height: 4px;
+}
+.timeline-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.timeline-scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(213, 213, 213);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.memory-image--next {
+  animation: memory-next 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.memory-image--previous {
+  animation: memory-previous 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+
+@keyframes memory-next {
+  from {
+    opacity: 0;
+    transform: translateX(45px) scale(0.97) rotate(1deg);
+    filter: blur(3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1) rotate(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes memory-previous {
+  from {
+    opacity: 0;
+    transform: translateX(-45px) scale(0.97) rotate(-1deg);
+    filter: blur(3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1) rotate(0);
+    filter: blur(0);
+  }
+}
+
+.memory-caption {
+  animation: memory-caption-in 280 ease-out both;
+}
+
+@keyframes memory-caption-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.memory-gallery--opening {
+  animation: gallery-background-in 220ms ease-out both; 
+}
+.memory-gallery--opening
+.memory-gallery__content {
+  animation: memory-gallery-in 300ms
+    cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+memory-gallery--closing {
+  pointer-events: none;
+  animation: gallery-background-out 240ms ease-in both;
+}
+
+.memory-gallery--closing
+.memory-gallery__content {
+  animation: memory-gallery-out 240ms ease-in both;
+}
+
+@keyframes memory-gallery-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94)
+      translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1)
+      translateY(0);
+  }
+}
+
+@keyframes memory-gallery-out {
+  from {
+    opacity: 1;
+    transform: scale(1)
+      translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1.04)
+      translateY(-12px);
+  }
+}
+
+/* Polaroid se pri zatvaranju malo zarotira i udalji. */
+
+.photo-lightbox--opening {
+  animation: gallery-background-in 220ms ease-out both;
+}
+
+.photo-lightbox--opening
+.photo-lightbox__card {
+  animation: polaroid-open 300ms
+    cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.photo-lightbox--closing {
+  pointer-events: none;
+  animation: gallery-background-out 240ms ease-in both;
+}
+
+.photo-lightbox--closing
+.photo-lightbox__card {
+  animation: polaroid-close 240ms ease-in both;
+}
+
+@keyframes polaroid-open {
+  from {
+    opacity: 0;
+    transform: scale(0.9)
+      rotate(-3deg)
+      translateY(25px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1)
+      rotate(0)
+      translateY(0);
+  }
+}
+
+@keyframes polaroid-close {
+  from {
+    opacity: 1;
+    transform: scale(1)
+      rotate(0)
+      translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.88)
+      rotate(3deg)
+      translateY(25px);
+  }
+}
+
+@keyframes gallery-background-in {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+
+  to {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+  }
+}
+
+@keyframes gallery-background-out {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+  }
+
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .memory-image--next,
+  .memory-image--previous,
+  .memory-caption,
+  .memory-gallery--opening,
+  .memory-gallery--closing,
+  .memory-gallery__content,
+  .photo-lightbox--opening,
+  .photo-lightbox--closing,
+  .photo-lightbox__card {
+    animation-duration: 1ms;
+  }
+}
+
+.interactive-heart__visual {
+  animation: heart-beat 1.15s ease-in-out infinite;
+  will-change: transform;
+}
+
+.interactive-heart__stage {
+  --heart-x: 0px;
+  --heart-y: 0px;
+  --glow-x: 0px;
+  --glow-y: 0px;
+}
+
+.interactive-heart__button {
+  transform: translate3d(var(--heart-x), var(--heart-y), 0)
+    scale(var(--heart-scale));
+  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.interactive-heart__glow-wrapper {
+  transform: translate3d(
+      calc(-50% + var(--glow-x)),
+      calc(-50% + var(--glow-y)),
+      0
+    )
+    scale(var(--glow-scale));
+  transition: transform 210ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.interactive-heart__glow {
+  opacity: 0.72;
+  filter:
+    blur(12px)
+    drop-shadow(0 0 20px rgba(255, 35, 85, 0.85))
+    drop-shadow(0 0 42px rgba(255, 90, 125, 0.55));
+
+  animation: heart-glow 1.15s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+@keyframes heart-glow {
+  0%,
+  100% {
+    opacity: 0.58;
+    transform: scale(1);
+  }
+
+  18% {
+    opacity: 0.95;
+    transform: scale(1.08);
+  }
+
+  36% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+}
+
+@keyframes heart-beat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  12% {
+    transform: scale(1.12);
+  }
+  24% {
+    transform: scale(1);
+  }
+  36% {
+    transform: scale(1.08);
+  }
+  50% {
+    transform: scale(1);
+  }
+}
+
+.interactive-heart__visual--bursting {
+  animation: heart-burst 550ms cubic-bezier(0.22, 1, 0.35, 1) both;
+}
+
+@keyframes heart-burst {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1.4) rotate(-4deg);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(0.85) rotate(3deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.2);
+  }
+}
+
+.birthday-final--opening {
+  animation: birthday-final-open 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.birthday-final--closing {
+  pointer-events: none;
+  animation: birthday-final-close 300ms ease-in both;
+}
+.birthday-final--opening
+.birthday-final__content {
+  animation: birthday-photo-open 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.birthday-final--closing
+.birthday-final__content {
+  animation: birthday-photo-close 300ms ease-in both;
+}
+
+@keyframes birthday-final-open {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes birthday-final-close {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes birthday-photo-open {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.88) rotate(-2deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0);
+  }
+}
+
+@keyframes birthday-photo-close {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+.birthday-final {
+  isolation: isolate;
+  contain: layout paint style;
+  transform: translateZ(0);
+
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(255, 255, 235, 0.98) 0%,
+      rgba(255, 231, 154, 0.92) 20%,
+      rgba(255, 192, 55, 0.62) 43%,
+      transparent 65%
+    ),
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(255, 248, 190, 0.95),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 85% 78%,
+      rgba(255, 225, 120, 0.8),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #c46a00 0%,
+      #f6b821 24%,
+      #fff0a3 48%,
+      #e79a0b 72%,
+      #a64d00 100%
+    );
+}
+
+.birthday-final::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 235, 0.95) 0 2px, transparent 3px),
+    radial-gradient(circle, rgba(255, 244, 175, 0.8) 0 1px, transparent 2px);
+
+  background-position:
+    0 0,
+    30px 45px;
+
+  background-size:
+    90px 90px,
+    65px 65px;
+
+  opacity: 0.65;
+  animation: golden-sparkles 3.5s ease-in-out infinite alternate;
+  will-change: opacity;
+}
+
+.birthday-final::after {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  z-index: 0;
+  pointer-events: none;
+
+  background: conic-gradient(
+    from 0deg,
+    transparent,
+    rgba(255, 255, 220, 0.35),
+    transparent 18%,
+    transparent 50%,
+    rgba(255, 249, 190, 0.3),
+    transparent 70%
+  );
+
+  opacity: 0.75;
+  animation: golden-rays 14s linear infinite;
+  will-change: transform;
+}
+
+.birthday-final__border {
+  z-index: 20;
+  overflow: visible;
+  transform: translateZ(0);
+}
+
+.birthday-final__border-text {
+  font-family: "Rye", Georgia, serif;
+  font-size: clamp(25px, 3.1vw, 48px);
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.birthday-final__border-text--base {
+  fill: #e6d846;
+  stroke: #714713;
+  stroke-width: 4px;
+  paint-order: stroke fill;
+}
+
+.birthday-final__border-text--bulbs {
+  fill: transparent;
+  stroke: #fffbd1;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 13;
+}
+
+
+@keyframes golden-sparkles {
+  from {
+    opacity: 0.4;
+  }
+
+  to {
+    opacity: 0.85;
+  }
+}
+
+@keyframes golden-rays {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive-heart__visual,
+  .interactive-heart__visual--bursting,
+  .birthday-final--opening,
+  .birthday-final--closing,
+  .birthday-final__content {
+    animation-duration: 1ms;
+    animation-iteration-count: 1;
+  }
+
+  .birthday-final__border animate {
+    display: none;
+  }
+
+  .interactive-heart__glow,
+  .birthday-final::before,
+  .birthday-final::after {
+    animation-duration: 1ms;
+    animation-iteration-count: 1;
+  }
+  
+}
