@@ -3,7 +3,7 @@ import Container from "../elements/Container";
 import { Heart, X } from "lucide-react";
 
 const REQUIRED_CLICKS = 8;
-const FINAL_PHOTO = "/gallery/leona_na_krevetu-final.jpeg";
+const FINAL_PHOTO = `${import.meta.env.BASE_URL}gallery/leona_na_krevetu-final.jpeg`;
 const BIRTHDAY_MESSAGE = " SRETAN ROĐENDAN LEONISHU MOJ NAJDRAŽI ★".repeat(3);
 
 interface Position {
