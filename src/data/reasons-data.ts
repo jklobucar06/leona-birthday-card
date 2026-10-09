@@ -18,7 +18,7 @@ export const reasons: Reason[] = [
     },
     {
         number: "#04",
-        reason: "...naši 'jbg', 'nmg', 'iskr' i 'au revor' drugima zvuče čudno, ali nema veze jer ih mi razumijemo...",
+        reason: "...naši 'jbg', 'nmg', 'iskr' i 'au revor' drugima zvuče čudno, ali nema veze jer su nama fora...",
     },
     {
         number: "#05",
@@ -26,7 +26,7 @@ export const reasons: Reason[] = [
     },
     {
         number: "#06",
-        reason: "...volim kad mi sva sretna prepričavaš što ti se zanimljivo dogodilo, pokazuješ što si novo kupila ili mi ispričas svaki nepotreban fun fact i detalj svog dana...",
+        reason: "...volim kad mi sva sretna prepričavaš što ti se zanimljivo dogodilo, pokazuješ što si novo kupila ili mi ispričaš svaki nepotreban fun fact i detalj svog dana...",
     },
     {
         number: "#07",
@@ -42,6 +42,6 @@ export const reasons: Reason[] = [
     },
     {
         number: "#10",
-        reason: "...si Janko KING - imaš predivne oči, predivan osmijeh, prezgodna 🍑 i još uz sve to si moja djevojka...",
+        reason: "...si Janko KING - imaš predivne oči, predivan osmijeh, prezgodna si 🍑 i još si uz sve to moja djevojka...",
     }
 ]

@@ -54,5 +54,27 @@ export const timelineMemories: Memory[] = [
         src: `${import.meta.env.BASE_URL}gallery/loli_grupna.jpeg`}, {caption: "Sipaaaaaj",
         src: `${import.meta.env.BASE_URL}gallery/loli_sipaaj.jpeg`}, {caption: "Šmekerski, nema šta.",
         src: `${import.meta.env.BASE_URL}gallery/loli_story.jpeg`}],
-    }
+    },
+    {
+        date: "9.9.2026.",
+        images: [{caption: "Nasmiješi se :)",
+        src: `${import.meta.env.BASE_URL}gallery/kvazar.jpeg`}, {caption: "🍾",
+        src: `${import.meta.env.BASE_URL}gallery/alc_grupna.jpeg`}, {caption: "😀",
+        src: `${import.meta.env.BASE_URL}gallery/alc_zagrljaj.jpeg`}, {caption: "dive",
+        src: `${import.meta.env.BASE_URL}gallery/alc_tea.jpeg`}],
+    },
+    {
+        date: "20.9.2026.",
+        images: [{caption: "SMOTRAAAA",
+        src: `${import.meta.env.BASE_URL}gallery/smotra_grupna.jpeg`}, {caption: "Međimurski lepi dečki...",
+        src: `${import.meta.env.BASE_URL}gallery/smotra_bas.jpeg`}],
+    },
+    {
+        date: "26.9.2026.",
+        images: [{caption: "Slovenijaaa 🇸🇮",
+        src: `${import.meta.env.BASE_URL}gallery/ribari.jpeg`}, {caption: "🦖",
+        src: `${import.meta.env.BASE_URL}gallery/slo_dino.jpeg`}, {caption: "#kajakiranje",
+        src: `${import.meta.env.BASE_URL}gallery/slo_camac.jpeg`}, {caption: "Mi smo najtamniji u mraku.",
+        src: `${import.meta.env.BASE_URL}gallery/slo_miner.jpeg`}],
+    },
 ]

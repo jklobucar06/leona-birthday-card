@@ -124,7 +124,7 @@ button {
 }
 
 .memory-caption {
-  animation: memory-caption-in 280 ease-out both;
+  animation: memory-caption-in 280ms ease-out both;
 }
 
 @keyframes memory-caption-in {
@@ -148,7 +148,7 @@ button {
     cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-memory-gallery--closing {
+.memory-gallery--closing {
   pointer-events: none;
   animation: gallery-background-out 240ms ease-in both;
 }

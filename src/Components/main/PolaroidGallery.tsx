@@ -1,8 +1,11 @@
 import { X } from "lucide-react";
 import { polaroids } from "../../data/polaroid-data"
 import Container from "../elements/Container"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useCallback } from "react"
 
+
+import { getThumbnail, preloadImage } from "../../utils/images";
+import GalleryImage from "../elements/GalleryImage";
 
 const layouts = [
   {
@@ -40,16 +43,23 @@ const PolaroidGallery = () => {
 
   const [isPhotoClosing, setIsPhotoClosing] = useState(false);
 
-  const closePhoto = () => {
-    if(isPhotoClosing) return;
+  const closeTimerRef = useRef<number | null>(null);
+
+  const closePhoto = useCallback(() => {
+    if(closeTimerRef.current !== null) return;
 
     setIsPhotoClosing(true);
 
-    window.setTimeout(() => {
+    closeTimerRef.current = window.setTimeout(() => {
       setSelectedIndex(null);
       setIsPhotoClosing(false);
+      closeTimerRef.current = null;
     }, 240);
-  }
+  }, []);
+
+  useEffect(() => () => {
+    if(closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
+  }, []);
 
   useEffect(() => {
     if(selectedIndex === null) return;
@@ -64,7 +74,7 @@ const PolaroidGallery = () => {
     });
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if(event.key === "Escape") setSelectedIndex(null);
+      if(event.key === "Escape") closePhoto();
     }
 
     window.addEventListener("keydown", handleKeyDown);
@@ -77,10 +87,10 @@ const PolaroidGallery = () => {
     };
 
 
-  }, [selectedIndex])
+  }, [selectedIndex, closePhoto])
 
   return (
-    <section className="overflow-hidden px-3 py-16 ms:px-6 lg:py-24">
+    <section className="overflow-hidden px-3 py-16 sm:px-6 lg:py-24">
         <Container>
             <div className="mb-14 text-center sm:mb-16">
               <h1 className="mt-3 text-4xl font-thin text-txt sm:text-6xl lg:text-7xl text-shadow-xs">
@@ -96,14 +106,16 @@ const PolaroidGallery = () => {
                     <button
                       type="button"
                       className={`
-                      group relative block w-full cursor-zoom-in bg-[#fffdf8] p-3 pb-0 text-txt shadow-md trasition duration-300 ease-out hover:z-10 hover:scale-105 outline-none hover:shadow-lg active:scale-[1.02] ${layout.rotation}`}
+                      group relative block w-full cursor-zoom-in bg-[#fffdf8] p-3 pb-0 text-txt shadow-md transition duration-300 ease-out hover:z-10 hover:scale-105 outline-none hover:shadow-lg active:scale-[1.02] ${layout.rotation}`}
+                      onMouseEnter={() => preloadImage(polaroid.src)}
+                      onFocus={() => preloadImage(polaroid.src)}
                       onClick={() => setSelectedIndex(index)}
                     >
                       <span
                         className="absolute -top-3 left-1/2 z-10 h-6 w-20 -translate-x-1/2 -rotate-3 bg-[#ead5c5]/80"/>
 
                       <span className="relative block aspect-square overflow-hidden bg-primary-dark/20">
-                        <img src={polaroid.src} alt={`Photo ${index + 1}`} className="h-full w-full object-cover transition duration-300 ease-out group-hover:scale-[1.03]"
+                        <img src={getThumbnail(polaroid.src)} alt={`Photo ${index + 1}`} className="h-full w-full object-cover transition duration-300 ease-out group-hover:scale-[1.03]"
                         loading="lazy"/>
 
                         <span className="absolute right-2 bottom-2 grid size-8 place-items-center rounded-full bg-white/75 text-lg text-txt/70 opacity-0 shadow-sm transition duration-200 ease-linear group-hover:opacity-100 hover:scale-105 hover:bg-white/85 active:scale-95 border-none group-focus-visible:opacity-100 cursor-pointer">
@@ -112,7 +124,7 @@ const PolaroidGallery = () => {
                       </span>
 
                       <span className="flex min-h-20 items-center justify-center gap-3 px-2 py-4 font-handwritten">
-                        <span className="shirnk-0 text-2xl text-txt/60 font-bold sm:text-3xl">
+                        <span className="shrink-0 text-2xl text-txt/60 font-bold sm:text-3xl">
                           {polaroid.number}
                         </span>
 
@@ -157,8 +169,8 @@ const PolaroidGallery = () => {
               <X strokeWidth={1.5} />
             </button>
 
-            <figure className="photo-lightbox__card m-0 w-fit max-w-full bg-[#fffdf8] p-3 pb-0 shadow-xl animate-[photoIn-300ms_cubic-bezier(0.22,1,0.36,1)_both] sm:p-4 sm:pb-0">
-              <img src={selectedPhoto.src} alt={`Uspomena ${selectedPhoto.number}: ${selectedPhoto.title}`} className="block max-h-[70dvh] max-w-full object-contain"/>
+            <figure className="photo-lightbox__card relative m-0 min-h-48 min-w-64 w-fit max-w-full bg-[#fffdf8] p-3 pb-0 shadow-xl animate-[photoIn-300ms_cubic-bezier(0.22,1,0.36,1)_both] sm:p-4 sm:pb-0">
+              <GalleryImage key={selectedPhoto.src} src={selectedPhoto.src} alt={`Uspomena ${selectedPhoto.number}: ${selectedPhoto.title}`} className="block max-h-[70dvh] max-w-full object-contain"/>
 
               <figcaption className="flex min-h-20 items-center justify-center gap-3 px-3 py-4">
                 <span className="text-xl text-txt font-bold sm:text-2xl">

@@ -1,7 +1,10 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { timelineMemories } from "../../data/timeline-data";
 import Container from "../elements/Container";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+
+import { getThumbnail, preloadImage } from "../../utils/images";
+import GalleryImage from "../elements/GalleryImage";
 
 const DAY_IN_MILISECONDS = 24 * 60 * 60 * 1000;
 
@@ -30,15 +33,18 @@ type MarkerPlacement = {
 };
 
 const markerPlacements: MarkerPlacement[] = [
-  {side: "top", distance: "near"},
-  {side: "bottom", distance: "near"},
-  {side: "top", distance: "near"},
-  {side: "bottom", distance: "near"},
-  {side: "top", distance: "near"},
-  {side: "top", distance: "far"},
-  {side: "bottom", distance: "near"},
-  {side: "top", distance: "near"},
-]
+  { side: "top", distance: "near" },    // 2.4.
+  { side: "bottom", distance: "near" }, // 3.5.
+  { side: "top", distance: "near" },    // 23.5.
+  { side: "bottom", distance: "near" }, // 6.7.
+  { side: "top", distance: "near" },    // 13.7.
+  { side: "top", distance: "far" },     // 17.8.
+  { side: "bottom", distance: "near" }, // 22.8.
+  { side: "top", distance: "near" },    // 29.8.
+  { side: "bottom", distance: "far" },  // 9.9.
+  { side: "top", distance: "far" },     // 20.9.
+  { side: "bottom", distance: "near" }, // 26.9.
+];
 
 const MemoryTimeline = () => {
   const [selectedMemoryIndex, setSelectedMemoryIndex] = useState<number | null>(null);
@@ -55,38 +61,50 @@ const MemoryTimeline = () => {
 
   const selectedImage = selectedMemory?.images[selectedImageIndex] ?? null;
 
+  const closeTimerRef = useRef<number | null>(null);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+
+  const preloadMemory = (memoryIndex: number) => {
+    timelineMemories[memoryIndex].images.forEach(({ src }) => preloadImage(src));
+  };
+
   const openGallery = (memoryIndex: number) => {
     setSelectedImageIndex(0);
+    setSlideDirection("next");
     setSelectedMemoryIndex(memoryIndex);
-  }
+  };
 
-  const closeGallery = () => {
-    if(isGalleryClosing) return;
-
+  const closeGallery = useCallback(() => {
+    if(closeTimerRef.current !== null) return;
     setIsGalleryClosing(true);
-
-    window.setTimeout(() => {
+    closeTimerRef.current = window.setTimeout(() => {
       setSelectedMemoryIndex(null);
       setSelectedImageIndex(0);
       setIsGalleryClosing(false);
+      closeTimerRef.current = null;
     }, 240);
-  }
+  }, []);
 
-  const showPreviousImage = () => {
-    if(!selectedMemory) return;
+  const changeImage = useCallback((direction: SlideDirection) => {
+    if(!selectedMemory || closeTimerRef.current !== null) return;
+    setSlideDirection(direction);
+    setSelectedImageIndex(index => (
+      index + (direction === "next" ? 1 : -1) + selectedMemory.images.length
+    ) % selectedMemory.images.length);
+  }, [selectedMemory]);
 
-    setSlideDirection("previous");
+  const showPreviousImage = () => changeImage("previous");
+  const showNextImage = () => changeImage("next");
 
-    setSelectedImageIndex(idx => idx > 0 ? idx - 1 : selectedMemory.images.length - 1);
-  }
+  useEffect(() => {
+    if(!selectedMemory || selectedMemory.images.length < 2) return;
+    const nextIndex = (selectedImageIndex + 1) % selectedMemory.images.length;
+    preloadImage(selectedMemory.images[nextIndex].src);
+  }, [selectedMemory, selectedImageIndex]);
 
-  const showNextImage = () => {
-    if(!selectedMemory) return;
-
-    setSlideDirection("next");
-
-    setSelectedImageIndex(idx => idx === (selectedMemory.images.length - 1) ? 0 : idx + 1);
-  }
+  useEffect(() => () => {
+    if(closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
+  }, []);
 
   useEffect(() => {
     if(selectedMemoryIndex === null) return;
@@ -102,16 +120,18 @@ const MemoryTimeline = () => {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if(event.key === "Escape") {
-        setSelectedImageIndex(0);
-        setSelectedMemoryIndex(null);
+        event.preventDefault();
+        closeGallery();
       }
 
       if(event.key === "ArrowLeft" && selectedMemory.images.length > 1) {
-        setSelectedImageIndex(curr => curr !== 0 ? curr - 1: selectedMemory.images.length - 1);
+        event.preventDefault();
+        changeImage("previous");
       }
 
       if(event.key === "ArrowRight" && selectedMemory.images.length > 1) {
-        setSelectedImageIndex(curr => curr === (selectedMemory.images.length - 1) ? 0 : curr + 1);
+        event.preventDefault();
+        changeImage("next");
       }
     }
 
@@ -123,7 +143,7 @@ const MemoryTimeline = () => {
         document.body.style.overflow = previousOverflow;
         previouslyFocusedElement?.focus();
       };
-  }, [selectedMemoryIndex])
+  }, [selectedMemoryIndex, closeGallery, changeImage])
   
 
   return (
@@ -131,7 +151,7 @@ const MemoryTimeline = () => {
       <Container>
         <header>
           <p className="text-xs tracking-[0.3rem] text-txt/55">
-            2.4.2026. - 29.8.2026.
+            2.4.2026. - 26.9.2026.
           </p>
 
           <h2 className="mt-3  text-5xl font-semibold sm:text-6xl lg:text-7xl">
@@ -144,7 +164,7 @@ const MemoryTimeline = () => {
         </header>
 
         <div className="timeline-scrollbar w-full overflow-x-auto pb-8">
-          <div className="relative h-144 min-w-7xl">
+          <div className="relative h-144 min-w-[1600px]">
             <div className="absolute inset-y-0 right-20 left-20">
               <div
                 className="
@@ -187,20 +207,17 @@ const MemoryTimeline = () => {
                         rounded-full border-4 border-white
                         bg-primary-dark/25 shadow-md
                         transition duration-300 ease-out
-                        hover:scale-110
-                        focus-visible:scale-110
-                        focus-visible:outline-3
-                        focus-visible:outline-offset-4
-                        focus-visible:outline-primary-dark
+                        hover:scale-110 focus:outline-none 
+                        focus-visible:outline-none
                       "
-                      onClick={() =>
-                        openGallery(memoryIndex)
-                      }
+                      onMouseEnter={() => preloadMemory(memoryIndex)}
+                      onFocus={() => preloadMemory(memoryIndex)}
+                      onClick={() => openGallery(memoryIndex)}
                       aria-haspopup="dialog"
                       aria-label={`Otvori uspomene za datum ${memory.date}`}
                     >
                       <img
-                        src={coverImage.src}
+                        src={getThumbnail(coverImage.src)}
                         alt={`Naslovna uspomena za ${memory.date}`}
                         className="
                           h-full w-full object-cover
@@ -355,8 +372,26 @@ const MemoryTimeline = () => {
             </button>
 
             <figure className="m-0 w-fit max-w-full">
-              <div className="relative mx-auto flex h-[68dvh] w-[min(92vw, 1100px)] items-center justify-center">
-                <img key={`${selectedMemoryIndex}-${selectedImageIndex}`} src={selectedImage.src} alt={`photo ${selectedImageIndex + 1}`} className={`h-full w-full object-contain rounded-md ${
+              <div
+                className="relative mx-auto flex h-[68dvh] w-[min(92vw,1100px)] max-w-full touch-pan-y items-center justify-center"
+                onTouchStart={(event) => {
+                  touchStartRef.current = event.touches.length === 1
+                    ? { x: event.touches[0].clientX, y: event.touches[0].clientY }
+                    : null;
+                }}
+                onTouchCancel={() => { touchStartRef.current = null; }}
+                onTouchEnd={(event) => {
+                  const start = touchStartRef.current;
+                  touchStartRef.current = null;
+                  if(!start || !event.changedTouches[0]) return;
+                  const dx = event.changedTouches[0].clientX - start.x;
+                  const dy = event.changedTouches[0].clientY - start.y;
+                  if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                    changeImage(dx < 0 ? "next" : "previous");
+                  }
+                }}
+              >
+                <GalleryImage key={`${selectedMemoryIndex}-${selectedImageIndex}`} src={selectedImage.src} alt={`photo ${selectedImageIndex + 1}`} className={`h-full w-full object-contain rounded-md ${
                   slideDirection === "next"
                   ? "memory-image--next"
                   : "memory-image--previous"
